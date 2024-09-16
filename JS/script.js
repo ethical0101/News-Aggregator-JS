@@ -1,68 +1,72 @@
 const apiKey = "2bfabc3d9c9c4a76ab1fd4870978800d";
 const apiUrl = "https://newsapi.org/v2/top-headlines?country=us&apiKey=";
-
 let count = 0;
+let articles = [];
 
-async function getNews(){
-    try{
-        const response = await fetch(apiUrl+apiKey);
+async function getNews() {
+    document.getElementById("loading").style.display = "block";  // Show loading indicator
+    
+    try {
+        const response = await fetch(apiUrl + apiKey);
         const data = await response.json();
-        const articles = data.articles;
-        // console.log(articles);
-        if(response != 401){
-            const title = document.querySelector(".title");
-            title.innerHTML = articles[count].title;
-            title.style.color = "red";
-            const source = document.querySelector(".sourcenews");
-            source.innerHTML = articles[count].source.name;
-            const date = document.querySelector(".published");
-            date.innerHTML = articles[count].publishedAt;
-            const desc = document.querySelector(".description");
-            desc.innerHTML = articles[count].description;
+        articles = data.articles;
 
-            const img = document.getElementById("newspic");
-            if(articles[count].urlToImage != null){
-                img.src = await articles[count].urlToImage;
-                img.style.width = "455px";
-            }else{
-                img.src = "../images/No_Image-1024.webp";
-                img.style.width = "455px";
-                img.style.height = "300px";
-                
-                img.style.background = "white";
-            }
+        if (response.status === 200 && articles.length > 0) {
+            updateNews();
+        } else {
+            showError();
         }
-        
-        document.querySelector(".sourcenews").style.display="block";
-        document.querySelector(".published").style.display="block";
-        document.querySelector(".description").style.display="block";
-        document.getElementById("newspic").style.display="block";
-        
-    }catch(error){
-        const title = document.querySelector(".title");
-        title.innerHTML = "No Data Found";
-        document.querySelector(".sourcenews").style.display="none";
-        document.querySelector(".published").style.display="none";
-        document.querySelector(".description").style.display="none";
-        document.getElementById("newspic").style.display="none";
+    } catch (error) {
+        showError();
+    }
 
-    }
-    
-    
+    document.getElementById("loading").style.display = "none";  // Hide loading indicator
 }
-getNews();
-function prev(){
-    if(count!=0){
+
+function updateNews() {
+    const article = articles[count];
+    document.querySelector(".title").innerHTML = article.title;
+    document.querySelector(".sourcenews").innerHTML = article.source.name;
+    
+    const date = new Date(article.publishedAt);
+    document.querySelector(".published").innerHTML = date.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    });
+    
+    document.querySelector(".description").innerHTML = article.description || "No description available.";
+
+    const img = new Image();
+    img.src = article.urlToImage || "../images/No_Image-1024.webp";
+    img.onload = () => {
+        const displayImg = document.getElementById("newspic");
+        displayImg.src = img.src;
+        displayImg.style.width = "455px";
+    };
+}
+
+function prev() {
+    if (count > 0) {
         count--;
+        updateNews();
     }
-    getNews();
-    // console.log(count);
 }
-function next(){
-    if(count>20){
-        count=0;
+
+function next() {
+    if (count < articles.length - 1) {
+        count++;
+        updateNews();
+    } else {
+        count = 0;
+        updateNews();
     }
-    count++;
-    getNews();
-    console.log(count);
 }
+
+function showError() {
+    document.querySelector(".title").innerHTML = "No Data Found";
+    document.querySelector(".sourcenews").style.display = "none";
+    document.querySelector(".published").style.display = "none";
+    document.querySelector(".description").style.display = "none";
+    document.getElementById("newspic").style.display = "none";
+}
+
+getNews();
