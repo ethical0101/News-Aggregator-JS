@@ -1,2 +1,19 @@
-# News-Aggregater-JS
-A simple News Aggregator built using JavaScript that fetches and displays the latest headlines from various sources via APIs. It provides a clean interface to browse top news stories, filter by categories, and search for specific topics, making it an efficient way to stay updated with current events.
+# News Aggregator App
+
+A simple web-based News Aggregator built using JavaScript that fetches and displays the latest headlines from various news sources via APIs. The app provides an intuitive interface to browse top stories, filter news by category, and search for specific topics.
+
+## Features
+
+- Fetches news from multiple sources using APIs.
+- Categorized news sections (e.g., Technology, Sports, Business, etc.).
+- Search functionality to find news based on keywords.
+- Responsive and user-friendly interface.
+
+## Technologies Used
+
+- **HTML5**: For the structure of the web page.
+- **CSS3**: For styling and layout.
+- **JavaScript**: For fetching and displaying news using APIs.
+- **News API**: [https://newsapi.org](https://newsapi.org) for fetching news headlines.
+
+
